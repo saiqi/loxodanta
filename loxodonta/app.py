@@ -11,13 +11,19 @@ requests_cache.install_cache('loxodonta_cache', backend='sqlite', expire_after=C
 
 app = Flask(__name__)
 
-def _make_request(url, params={}, headers = {}, use_tls=True):
-    resp = requests.get(
-        url=f'https://{url}' if use_tls else f'http://{url}',
-        params=params,
-        headers=headers,
-        allow_redirects=False)
-    return resp
+def _make_request(url, params={}, headers = {}):
+    try:
+        return requests.get(
+            url=f'https://{url}',
+            params=params,
+            headers=headers,
+            allow_redirects=False)
+    except:
+        return requests.get(
+            url=f'http://{url}',
+            params=params,
+            headers=headers,
+            allow_redirects=False)
 
 @app.route('/p/<path:url>', methods=['GET'])
 def proxy(url):
