@@ -17,13 +17,15 @@ def _make_request(url, params={}, headers = {}):
             url=f'https://{url}',
             params=params,
             headers=headers,
-            allow_redirects=False)
+            allow_redirects=False,
+            timeout=600)
     except:
         return requests.get(
             url=f'http://{url}',
             params=params,
             headers=headers,
-            allow_redirects=False)
+            allow_redirects=False,
+            timeout=600)
 
 @app.route('/p/<path:url>', methods=['GET'])
 def proxy(url):
