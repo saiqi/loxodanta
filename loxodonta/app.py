@@ -1,6 +1,5 @@
 import os
-from urllib.parse import urlparse
-from flask import request, Response, abort, g
+from flask import request, Response
 from flask.app import Flask
 import requests
 import requests_cache
@@ -13,19 +12,21 @@ app = Flask(__name__)
 
 def _make_request(url, params={}, headers = {}):
     try:
-        return requests.get(
+        resp = requests.get(
             url=f'https://{url}',
             params=params,
             headers=headers,
             allow_redirects=False,
             timeout=600)
     except:
-        return requests.get(
+        resp = requests.get(
             url=f'http://{url}',
             params=params,
             headers=headers,
             allow_redirects=False,
             timeout=600)
+    app.logger.info(f'Did request to {url} use cache ? {resp.from_cache}') #type: ignore
+    return resp
 
 @app.route('/p/<path:url>', methods=['GET'])
 def proxy(url):
